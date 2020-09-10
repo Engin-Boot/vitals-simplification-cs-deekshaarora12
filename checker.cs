@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.Diagnostics;
 
 class Checker
@@ -30,5 +30,101 @@ class Checker
         ExpectFalse(vitalsAreOk(40, 91, 92));
         Console.WriteLine("All ok");
         return 0;
+    }
+}*/
+
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Vitals_Simplification
+{
+ class Checker
+    {
+
+        internal abstract class Alert
+        {
+           internal abstract void GetAlert(string vitalname, Dictionary<string,bool> vitalalertinfo);
+        }
+        internal class AlertInSMS : Alert
+        {
+            internal override void GetAlert(string vitalname, Dictionary<string, bool> vitalalertinfo)
+            {
+                foreach (KeyValuePair<string, bool> kvp in vitalalertinfo)
+                {
+                    if (kvp.Value == true)
+                        Console.WriteLine($"Alert in SMS --> {vitalname} {kvp.Key}");    
+                }
+            }
+        }
+        internal class AlertInSound : Alert
+        {
+            internal override void GetAlert(string vitalname, Dictionary<string, bool> vitalalertinfo)
+            {
+                foreach (KeyValuePair<string, bool> kvp in vitalalertinfo)
+                {
+                    if (kvp.Value == true)
+                        Console.WriteLine($"Alert in Sound --> {vitalname} {kvp.Key}");
+                }
+            }
+        }
+       internal class vitals
+        {
+             string name;
+             float upperlimit;
+             float lowerlimit;
+             float singlelimit;
+
+            internal vitals(string name, float upperlimit, float lowerlimit, float singlelimit)
+            {
+                this.name = name;
+                this.upperlimit = upperlimit;
+                this.lowerlimit = lowerlimit;
+                this.singlelimit = singlelimit;
+            }
+
+
+            public bool checkHigh(string vitalname,float value)
+            {
+                return (value > upperlimit);
+            }
+            public bool checkLow(string vitalname, float value)
+            {
+                return (value < lowerlimit);
+            }
+            public bool checkNormal(string vitalname, float value)
+            {
+                return ((value >= lowerlimit && value <= upperlimit)||(value == singlelimit));
+            }
+
+            public void CheckVitals(Alert alert,string vitalname,float value)
+            {
+                Dictionary<string, bool> vitalalertinfo = new Dictionary<string, bool>();
+
+                bool high = checkHigh(vitalname, value);
+                bool low = checkLow(vitalname, value);
+                bool normal = checkNormal(vitalname, value);
+
+                vitalalertinfo.Add("High rate", high);
+                vitalalertinfo.Add("Low rate", low);
+                vitalalertinfo.Add("Normal Rate", normal);
+
+                alert.GetAlert(vitalname,vitalalertinfo);
+            }
+        }
+        static void Main()
+        {
+            AlertInSMS alertsms = new AlertInSMS();
+            AlertInSound alertsound = new AlertInSound();
+
+            vitals vt = new vitals("Bpm", 150, 70, 0);
+            vt.CheckVitals(alertsms, "Bpm", 40);
+            vt.CheckVitals(alertsound, "Bpm", 170);
+
+        }
     }
 }
