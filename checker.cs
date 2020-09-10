@@ -111,8 +111,8 @@ namespace Vitals_Simplification
             ExpectTrue(bpm.checkNormal("Bpm", 70));
 
             ExpectFalse(bpm.checkHigh("Bpm", 17));
-            ExpectFalse(bpm.checkLow("Bpm", 70));
-            ExpectFalse(bpm.checkNormal("Bpm", 120));
+            ExpectFalse(bpm.checkLow("Bpm", 120));
+            ExpectFalse(bpm.checkNormal("Bpm", 12));
 
             vitals resp = new vitals("Resp", 95, 30);
             resp.CheckVitals(alertsms, "Resp", 14);
